@@ -20,19 +20,19 @@ A list of the user's favorites should render in a section at the top of the page
 
 1. Basically, recreate the steps for building the pokedex, but use the Rick and Morty API instead. The javascript pattern for this will be super similar, but you'll need to read through the API documentation to figure out how to fetch the list of characters. If you have time and want to implement search and filtering, go for it! It's not essential but would be good practice to do that again. 
 2. Once you have the list of characters styled and rendering, create the functionality for adding and removing characters to favorites.
-  1. Characters will be saved as favorites in the local storage of your browser. Do some research and become comfortable with the concept of local storage and how you interact with it through javascript. Recommended resources:
-    * https://www.youtube.com/watch?v=AUOzvFzdIk4&ab_channel=dcode
-    * https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
-  2. I encourage you to take some time to experiment with adding and accessing data to your local storage directly from your project so that you have a working understanding of local storage before continuing on. 
-  3. Add an "Add to favorites" button (a plain button element is fine for now) to your character card elements. When this button is clicked, the character object should be added to an array of favorites stored in local storage. Example:
-<img width="1022" alt="Screen Shot 2022-12-22 at 1 29 50 PM" src="https://user-images.githubusercontent.com/25269980/209229823-28e5dc3c-2e7f-4cd2-9faa-305658a41bb1.png">
-  4. Create and style your favorites section at the top of the page. Render the characters stored in favorites. 
-  5. Add a "Remove from favorites" button to the character cards. When this button is pressed, the character is removed from the list of favorites in local storage and should no longer appear in the rendered favorites section. 
-  6. Combine these two buttons into one favorites icon button that changes appearance based on whether the character is favorited or not
-3. Stretch goals:
-  * Rather than storing the entire character object in local storage, switch to only saving the ID of the character in the favorites array. When rendering the user's favorites, use that ID to find the character object in the general list of characters - this pattern is closer to how data is accessed and stored in a database. It might be tricky to figure out at first, but I highly recommend taking on this stretch goal!
-  * Create a new page for displaying the favorited characters, and a sidebar or top bar that lets the user switch between the general list of characters and the list of favorites (instead of the favorites and general list being on the same page)
-  * Allow the user to input a note about their favorite characters. The note should be saved with the character in local storage, and the user should be able to edit these notes. 
-  * Deploy your site using Netlify
+    1. Characters will be saved as favorites in the local storage of your browser. Do some research and become comfortable with the concept of local storage and how you interact with it through javascript. Recommended resources:
+        - https://www.youtube.com/watch?v=AUOzvFzdIk4&ab_channel=dcode
+        - https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+    2. I encourage you to take some time to experiment with adding and accessing data to your local storage directly from your project so that you have a working understanding of local storage before continuing on. 
+    3. Add an "Add to favorites" button (a plain button element is fine for now) to your character card elements. When this button is clicked, the character object should be added to an array of favorites stored in local storage. Example:<img width="1022" alt="Screen Shot 2022-12-22 at 1 29 50 PM" src="https://user-images.githubusercontent.com/25269980/209229823-28e5dc3c-2e7f-4cd2-9faa-305658a41bb1.png">
+    4. Create and style your favorites section at the top of the page. Render the characters stored in favorites. 
+    5. Add a "Remove from favorites" button to the character cards. When this button is pressed, the character is removed from the list of favorites in local storage and should no longer appear in the rendered favorites section. 
+    6. Combine these two buttons into one favorites icon button that changes appearance based on whether the character is favorited or not
+ 
+Stretch goals:
+1. Rather than storing the entire character object in local storage, switch to only saving the ID of the character in the favorites array. When rendering the user's favorites, use that ID to find the character object in the general list of characters - this pattern is closer to how data is accessed and stored in a database. It might be tricky to figure out at first, but I highly recommend taking on this stretch goal!
+2. Create a new page for displaying the favorited characters, and a sidebar or top bar that lets the user switch between the general list of characters and the list of favorites (instead of the favorites and general list being on the same page)
+3. Allow the user to input a note about their favorite characters. The note should be saved with the character in local storage, and the user should be able to edit these notes. 
+4. Deploy your site using Netlify
 
 
