@@ -1,0 +1,95 @@
+@font-face {
+    font-family: Rick-and-Morty-font;
+    src: url(get_schwifty.ttf);
+}
+.title-bar {
+    display: flex;
+    border: solid rgb(116, 246, 41) 3px;
+    border-radius: 50px;
+    background: beige;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+#body-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    max-height: window;
+}
+h1 {
+    font-family: Rick-and-Morty-font;
+    color: rgb(110, 211, 236);
+    font-size: 60px;
+    text-shadow: rgb(116, 246, 41) 1px 0 10px;
+}
+#favorite-container {
+    display: flex;
+    max-height: 770px;
+    min-width: 180px;
+    border: solid gold 3px;
+    color: black;
+    background-color: beige;
+    margin: 10px;
+    border-radius: 20px;
+    justify-content: center;
+    overflow: scroll;
+}
+#card-container {
+    display: flex;
+    flex-flow: row wrap;
+    width: window;
+    height: 770px;
+    overflow: scroll;
+}
+.characterCard {
+    display: flex;
+    flex-wrap: wrap;
+    border: solid black 3px;
+    color: black;
+    background-color: beige;
+    max-width: 250px;
+    margin: 10px;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+.characterCard img:first-child {
+    max-width: 230px;
+    max-height: 230px;
+    margin: 5px;
+    border: solid white 5px;
+    border-radius: 15px;
+}
+#filterBarContainer {
+    display: flex;
+    flex-wrap: wrap;
+    border: solid black 3px;
+    color: black;
+    background-color: beige;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    justify-self: flex-start;
+    width: window;
+    height: 30px;
+    margin-left: 5px;
+}
+.favoriteButton {
+    margin: 8px;
+    width: 15px;
+}
+
+.characterCard ul {
+    list-style: none;
+}
+.characterCard div {
+    font-weight: bold;
+    font-family: fantasy;
+}
+.characterCard:hover {
+    border: solid gold 3px;
+}
