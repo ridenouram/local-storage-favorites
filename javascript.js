@@ -1,5 +1,8 @@
 const RickAndMortyAPI = 'https://rickandmortyapi.com/api/character';
 const characterArray = [];
+const searchInput = document.getElementById('filter-search');
+searchInput.addEventListener('keyup', searchMortyPad);
+
 
 async function getCharacters() {
     for(let i = 1; i <= 826; i++) {
@@ -15,7 +18,6 @@ async function getCharacters() {
         };
         characterArray.push(characterCard);
     }
-    console.log(characterArray);
 }
 
 function createCharacterCards() {
@@ -27,10 +29,10 @@ function createCharacterCards() {
         card.classList.add('characterCard');
         let image = document.createElement('img'); 
         image.src = characterArray[i].image;
-        console.log(characterArray[i].image);
         let name = document.createElement('div');
+        name.classList.add('characterNames');
         let favoriteIcon = document.createElement('img');
-        favoriteIcon.src = '/heart-16px.png';
+        favoriteIcon.src = '/red-heart.png';
         favoriteIcon.classList.add('favoriteButton');
         name.innerHTML = characterArray[i].name; 
         let text = document.createElement('ul');
@@ -49,10 +51,49 @@ function createCharacterCards() {
         text.appendChild(species); 
         text.appendChild(location);   
     }
-
 }
 async function mortyPadSetup() {
     await getCharacters();
     await createCharacterCards();
+    await addFavoriteButtonFuncion();
 }
 mortyPadSetup();
+
+function searchMortyPad(event) {
+    // here I want to take each key up event and use it to search through all the
+    // name values of each DOM element. Display hidden on all cards that do not match
+    let searchValue = event.target.value.toUpperCase(); 
+    console.log(searchValue);
+    let characterCardNodesList = document.querySelectorAll('div.characterCard');
+    let characterNameList = document.querySelectorAll('div.characterNames');
+    for(let i = 0; i < characterCardNodesList.length; i++) {
+        let characterName = characterNameList[i].innerHTML.toUpperCase();
+        console.log(characterName);
+        if(characterName.indexOf(searchValue) > -1) {
+            characterCardNodesList[i].classList.remove('hidden');
+        }
+        else {
+            characterCardNodesList[i].classList.add('hidden');
+        }
+    }
+}
+
+function addFavoriteButtonFuncion() {
+    const favoriteButton = document.querySelectorAll('.favoriteButton');
+    favoriteButton.forEach((favorite) => favorite.addEventListener('click', favoriteOnClick));
+
+}
+
+function favoriteOnClick(event) {
+    console.log(event);
+// here I want to be able to click on the heart icon in any card and select it 
+// as a favorite character. Each heart will need an event listener and when each 
+// card is selected, I want to:
+// 1. change the display of the heart, when selected
+//changeHeartDisplay();
+// 2. create copy of chosen card's image and name in favorite bar
+//pinFavorite();
+// 3. create function to remove from favorite bar by clicking -> change color of heart
+//unpinFavorite();
+
+}

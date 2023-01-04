@@ -48,12 +48,14 @@ h1 {
     color: black;
     background-color: beige;
     max-width: 250px;
+    max-height: 440px;
     margin: 10px;
     border-radius: 20px;
     justify-content: center;
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
+    overflow: scroll;
 }
 .characterCard img:first-child {
     max-width: 230px;
@@ -79,10 +81,16 @@ h1 {
     margin-left: 5px;
 }
 .favoriteButton {
-    margin: 8px;
-    width: 15px;
+    margin: 5px;
+    width: 25px;
+    filter: grayscale(100);
 }
-
+.favoriteButton:hover {
+    width:28px;
+}
+.characterNames {
+    max-width: 200px;
+}
 .characterCard ul {
     list-style: none;
 }
@@ -92,4 +100,7 @@ h1 {
 }
 .characterCard:hover {
     border: solid gold 3px;
+}
+.hidden {
+    display: none;
 }
