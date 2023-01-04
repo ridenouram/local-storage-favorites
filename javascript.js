@@ -1,3 +1,13 @@
+// TO - DO 
+// favorite button functions: change display when clicked, create pinned favorite card in fav bar, make 
+// favorite characters in favorite bar UN-favorite-able; setting favorite boolen
+// to true can be the circuit switch for these functions 
+// local storage: using a similar function, we want to save the favorited/pinned characters in local storage so that 
+// when the page is reloaded they stay pinned to the favorite board. localStorage.setItem will allow us to set a key
+// value pair. Since the pinned favorite characters will display name, and image -- those are items we should opt to store
+// API pagination: We should have the first fetch to the RickAndMortyAPI be for just the first page of characters, then a 
+// subsequent fetch for the other ones to reduce the amount of time it takes to render the screen. 
+
 const RickAndMortyAPI = 'https://rickandmortyapi.com/api/character';
 const characterArray = [];
 const searchInput = document.getElementById('filter-search');
