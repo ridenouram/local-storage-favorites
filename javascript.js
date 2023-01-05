@@ -42,7 +42,9 @@ function createCharacterCards() {
         let name = document.createElement('div');
         name.classList.add('characterNames');
         let favoriteIcon = document.createElement('img');
-        favoriteIcon.src = '/red-heart.png';
+        favoriteIcon.src = 'img/not-favorite-heart.svg';
+        //each hearts index attribute matches card's index in character Array and child # in DOM container
+        favoriteIcon.dataset.index = `${i}`;
         favoriteIcon.classList.add('favoriteButton');
         name.innerHTML = characterArray[i].name; 
         let text = document.createElement('ul');
@@ -65,9 +67,10 @@ function createCharacterCards() {
 async function mortyPadSetup() {
     await getCharacters();
     await createCharacterCards();
-    await addFavoriteButtonFuncion();
+    await listenForFavorite();
 }
 mortyPadSetup();
+clearFavorites();
 
 function searchMortyPad(event) {
     // here I want to take each key up event and use it to search through all the
@@ -88,22 +91,63 @@ function searchMortyPad(event) {
     }
 }
 
-function addFavoriteButtonFuncion() {
+// favorite functionality building + local storage interaction
+
+function listenForFavorite() {
     const favoriteButton = document.querySelectorAll('.favoriteButton');
     favoriteButton.forEach((favorite) => favorite.addEventListener('click', favoriteOnClick));
 
 }
 
 function favoriteOnClick(event) {
-    console.log(event);
+    addToFavorites(event);
+    changeHeartDisplay(event); 
+}
+
+function addToFavorites(event) {
+    let selectedFavoriteCardIndex = event.target.dataset.index;
+    let serializedObj = JSON.stringify(characterArray[selectedFavoriteCardIndex]);
+    event.target.classList.toggle('favorited');
+    if(event.target.classList.contains('favorited')) {
+        console.log('this is one of my faves now');
+        window.localStorage.setItem(`${characterArray[selectedFavoriteCardIndex].name}`, `${serializedObj}`);
+    } else { 
+        console.log('this is NOT one of my faves now');
+        localStorage.removeItem(`${characterArray[selectedFavoriteCardIndex].name}`, `${serializedObj}`);
+
+    }}
+
+function changeHeartDisplay(event) {
+    if(event.target.classList.contains('favorited')){
+        event.target.src = 'img/favorite-heart.svg';
+    } else { event.target.src = 'img/not-favorite-heart.svg';}
+}
+
+function pinFavorite() {
+    //first check local storage for favorites to pin 
+    //
+
+}
+
+function clearFavorites() {
+    const favoriteBar = document.getElementById('favorite-container');
+    const clearButton = document.createElement('div'); 
+    clearButton.classList.add('clear-button');
+    clearButton.innerText = 'Clear';
+    clearButton.addEventListener('click', () => {
+        localStorage.clear();
+    });
+    if(localStorage.length > 0) {
+        favoriteBar.appendChild(clearButton);
+    } 
+}
+
 // here I want to be able to click on the heart icon in any card and select it 
 // as a favorite character. Each heart will need an event listener and when each 
 // card is selected, I want to:
 // 1. change the display of the heart, when selected
-//changeHeartDisplay();
+    //listenForFavorite();
 // 2. create copy of chosen card's image and name in favorite bar
 //pinFavorite();
 // 3. create function to remove from favorite bar by clicking -> change color of heart
 //unpinFavorite();
-
-}
