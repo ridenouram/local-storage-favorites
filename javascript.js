@@ -211,9 +211,12 @@ function pinFavorite(character) {
     favoriteCardImg.src = character.image;
     let favoriteCardName = document.createElement('div');
     favoriteCardName.innerText = character.name; 
+    let favoritePin = document.createElement('img');
+    favoritePin.src = 'img/thumb-tack.svg';
     favoriteBar.appendChild(favoriteCard);
     favoriteCard.appendChild(favoriteCardImg);
     favoriteCard.appendChild(favoriteCardName);
+    favoriteCard.appendChild(favoritePin);
 }
 function unpinFavorite(character) {
     let unfavoriteCharacter = document.getElementById(`favorite-card-${character.id}`);
