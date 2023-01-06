@@ -1,25 +1,16 @@
-// TO - DO 
-// favorite button functions: change display when clicked, create pinned favorite card in fav bar, make 
-// favorite characters in favorite bar UN-favorite-able; setting favorite boolen
-// to true can be the circuit switch for these functions 
-// local storage: using a similar function, we want to save the favorited/pinned characters in local storage so that 
-// when the page is reloaded they stay pinned to the favorite board. localStorage.setItem will allow us to set a key
-// value pair. Since the pinned favorite characters will display name, and image -- those are items we should opt to store
-// API pagination: We should have the first fetch to the RickAndMortyAPI be for just the first page of characters, then a 
-// subsequent fetch for the other ones to reduce the amount of time it takes to render the screen. 
-
 const RickAndMortyAPI = 'https://rickandmortyapi.com/api/character';
-const characterArray = [];
+let characterArray = [];
 const searchInput = document.getElementById('filter-search');
+const favoriteBar = document.getElementById('favorite-container');
 searchInput.addEventListener('keyup', searchMortyPad);
 
-
-async function getCharacters() {
-    for(let i = 1; i <= 826; i++) {
+async function getFirstCharacters() {
+    for(let i = 1; i <= 20; i++) {
         const APIResponse = await fetch(`${RickAndMortyAPI}/${i}`);
         const json = await APIResponse.json();
         let characterCard = {
             name: json.name,
+            id: `${i}`,
             image: json.image,
             status: json.status,
             species: json.species,
@@ -28,6 +19,24 @@ async function getCharacters() {
         };
         characterArray.push(characterCard);
     }
+}
+
+async function getCharacters() {
+    for(let i = 21; i <= 826; i++) {
+        const APIResponse = await fetch(`${RickAndMortyAPI}/${i}`);
+        const json = await APIResponse.json();
+        let characterCard = {
+            name: json.name,
+            id: json.id,
+            image: json.image,
+            status: json.status,
+            species: json.species,
+            location: json.location.name,
+            favorite: false
+        };
+        characterArray.push(characterCard);
+    }
+    localStorage.setItem('Character Array', JSON.stringify(characterArray));
 }
 
 function createCharacterCards() {
@@ -42,7 +51,10 @@ function createCharacterCards() {
         let name = document.createElement('div');
         name.classList.add('characterNames');
         let favoriteIcon = document.createElement('img');
-        favoriteIcon.src = 'img/not-favorite-heart.svg';
+        if(characterArray[i].favorite) {
+            favoriteIcon.src = 'img/favorite-heart.svg';
+            favoriteIcon.classList.add('favorited');
+        } else {favoriteIcon.src = 'img/not-favorite-heart.svg';}
         //each hearts index attribute matches card's index in character Array and child # in DOM container
         favoriteIcon.dataset.index = `${i}`;
         favoriteIcon.classList.add('favoriteButton');
@@ -64,14 +76,39 @@ function createCharacterCards() {
         text.appendChild(location);   
     }
 }
-async function mortyPadSetup() {
+
+
+async function mortyAppInit() {
+    console.log('fetching from API for first few characters');
+    await getFirstCharacters();
+    await createCharacterCards();
+    console.log('fetching from API for other 800+ characters');
     await getCharacters();
     await createCharacterCards();
     await listenForFavorite();
 }
-mortyPadSetup();
-clearFavorites();
 
+// if the character array exists already in local storage, go get it and use that
+// otherwise fetch all the api data, pop localstorage and then use that
+function checkLocalStorage() {
+    let myObj = localStorage.getItem('Character Array');
+    if(myObj !== null) {
+        characterArray = JSON.parse(myObj);
+        console.log(characterArray);
+        createCharacterCards();
+        listenForFavorite();
+    } else {
+        console.log('else statement trigger');
+        mortyAppInit();}
+}
+
+function updateLocalStorage() {
+    localStorage.setItem('Character Array', JSON.stringify(characterArray));
+}
+
+checkLocalStorage();
+favoriteBarSetup();
+//clearFavorites();
 function searchMortyPad(event) {
     // here I want to take each key up event and use it to search through all the
     // name values of each DOM element. Display hidden on all cards that do not match
@@ -90,64 +127,95 @@ function searchMortyPad(event) {
         }
     }
 }
-
 // favorite functionality building + local storage interaction
-
 function listenForFavorite() {
     const favoriteButton = document.querySelectorAll('.favoriteButton');
     favoriteButton.forEach((favorite) => favorite.addEventListener('click', favoriteOnClick));
-
 }
 
 function favoriteOnClick(event) {
     addToFavorites(event);
-    changeHeartDisplay(event); 
+    changeHeartDisplay(event);
+}
+//populate favorite bar with localstorage faves or empty favorite message
+function favoriteBarSetup() {
+    let emptyFavoriteCard = document.createElement('div');
+    let emptyFavoriteCardText = document.createElement('p');
+    emptyFavoriteCard.classList.add('favoriteCard', 'hidden');
+    emptyFavoriteCard.id = 'empty-favorite-message';
+    emptyFavoriteCardText.innerText = 'Use the heart icon to select your favorite Rick and Morty Characters!';
+    favoriteBar.appendChild(emptyFavoriteCard);
+    emptyFavoriteCard.appendChild(emptyFavoriteCardText);
+    if(localStorage.length === 1) { // It might be better to create a favorites array in localstorage and check to see if that has a length >0 
+        emptyFavoriteCard.classList.remove('hidden');
+    } else {pinExistingFavorites();}
 }
 
 function addToFavorites(event) {
-    let selectedFavoriteCardIndex = event.target.dataset.index;
-    let serializedObj = JSON.stringify(characterArray[selectedFavoriteCardIndex]);
-    event.target.classList.toggle('favorited');
+    let selectedFavoriteCardIndex = event.target.dataset.index; // each heart as an id that matches the id of the card
+    event.target.classList.toggle('favorited');//red heart to black heart toggle
     if(event.target.classList.contains('favorited')) {
         console.log('this is one of my faves now');
+        characterArray[selectedFavoriteCardIndex].favorite = true; 
+        let serializedObj = JSON.stringify(characterArray[selectedFavoriteCardIndex]);// stringify the selected cards card object data
         window.localStorage.setItem(`${characterArray[selectedFavoriteCardIndex].name}`, `${serializedObj}`);
+        console.log(characterArray[selectedFavoriteCardIndex]);
+        updateLocalStorage();
+        pinFavorite(characterArray[selectedFavoriteCardIndex]);
     } else { 
         console.log('this is NOT one of my faves now');
+        characterArray[selectedFavoriteCardIndex].favorite = false;
+        let serializedObj = JSON.stringify(characterArray[selectedFavoriteCardIndex]);// stringify the selected cards card object data
         localStorage.removeItem(`${characterArray[selectedFavoriteCardIndex].name}`, `${serializedObj}`);
-
+        updateLocalStorage();
+        unpinFavorite(characterArray[selectedFavoriteCardIndex]);
     }}
 
 function changeHeartDisplay(event) {
-    if(event.target.classList.contains('favorited')){
+    //debugger;
+    if(event.target.classList.contains('favorited')) {
         event.target.src = 'img/favorite-heart.svg';
     } else { event.target.src = 'img/not-favorite-heart.svg';}
 }
-
-function pinFavorite() {
-    //first check local storage for favorites to pin 
-    //
-
+//pin all favorites stored in local storage on load
+function pinExistingFavorites() {
+    for(let i = 0; i < localStorage.length; i++) {
+        let myLocalStorageObj = localStorage.getItem(localStorage.key(i));
+        if(localStorage.key(i) === 'Character Array') continue;
+        let favCharacterObj = JSON.parse(myLocalStorageObj);
+        console.log(favCharacterObj);
+        let favoriteCards = document.createElement('div');
+        favoriteCards.classList.add('favoriteCard');
+        favoriteCards.id = `favorite-card-${favCharacterObj.id}`;
+        let favoriteCardImg = document.createElement('img');
+        favoriteCardImg.src = favCharacterObj.image;
+        let favoriteCardName = document.createElement('div');
+        favoriteCardName.innerText = favCharacterObj.name; 
+        let favoritePin = document.createElement('img');
+        favoritePin.src = 'img/thumb-tack.svg';
+        favoriteBar.appendChild(favoriteCards);
+        favoriteCards.appendChild(favoriteCardImg);
+        favoriteCards.appendChild(favoriteCardName);
+        favoriteCards.appendChild(favoritePin);
+    }
 }
-
-function clearFavorites() {
-    const favoriteBar = document.getElementById('favorite-container');
-    const clearButton = document.createElement('div'); 
-    clearButton.classList.add('clear-button');
-    clearButton.innerText = 'Clear';
-    clearButton.addEventListener('click', () => {
-        localStorage.clear();
-    });
-    if(localStorage.length > 0) {
-        favoriteBar.appendChild(clearButton);
-    } 
+function pinFavorite(character) {
+    //remove empty favorite card helper tool 
+    let emptyFavoriteCard = document.getElementById('empty-favorite-message');
+    emptyFavoriteCard.classList.add('hidden');
+    //if favorite -> create DOM element 
+    let favoriteCard = document.createElement('div');
+    favoriteCard.classList.add('favoriteCard');
+    favoriteCard.id = `favorite-card-${character.id}`;
+    let favoriteCardImg = document.createElement('img');
+    favoriteCardImg.src = character.image;
+    let favoriteCardName = document.createElement('div');
+    favoriteCardName.innerText = character.name; 
+    favoriteBar.appendChild(favoriteCard);
+    favoriteCard.appendChild(favoriteCardImg);
+    favoriteCard.appendChild(favoriteCardName);
 }
-
-// here I want to be able to click on the heart icon in any card and select it 
-// as a favorite character. Each heart will need an event listener and when each 
-// card is selected, I want to:
-// 1. change the display of the heart, when selected
-    //listenForFavorite();
-// 2. create copy of chosen card's image and name in favorite bar
-//pinFavorite();
-// 3. create function to remove from favorite bar by clicking -> change color of heart
-//unpinFavorite();
+function unpinFavorite(character) {
+    let unfavoriteCharacter = document.getElementById(`favorite-card-${character.id}`);
+    unfavoriteCharacter.remove();
+}

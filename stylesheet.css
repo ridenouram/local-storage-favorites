@@ -2,6 +2,78 @@
     font-family: Rick-and-Morty-font;
     src: url(get_schwifty.ttf);
 }
+h1 {
+    font-family: Rick-and-Morty-font;
+    color: rgb(110, 211, 236);
+    font-size: 60px;
+    text-shadow: rgb(116, 246, 41) 1px 0 10px;
+    text-align: center;
+}
+hr {
+    margin: 5px;
+    min-width: none;
+}
+#body-container {
+    display: grid;
+    grid-template-columns: 1fr 10px 4fr;
+    max-height: window;
+}
+#favorite-container {
+    display: flex;
+    flex-direction: column;
+    height: 770px;
+    min-width: 200px;
+    border: solid gold 3px;
+    color: black;
+    background-color: beige;
+    margin: 10px;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+    border-radius: 20px;
+    overflow: scroll;
+    position: relative;
+    background-image: url(img/corkboard-background.jpeg);
+    background-size: 300px;
+}
+#favorite-container h1 {
+    display: flex;
+    flex-direction: column;
+    font-size: 35px; 
+    background-color: blanchedalmond; 
+    border: solid gold 2px; 
+    margin: 5px; 
+    border-radius: 30px; 
+    height: 60px; 
+    width: 200px; 
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+}
+#filterBarContainer {
+    display: flex;
+    flex-wrap: wrap;
+    border: solid black 3px;
+    color: black;
+    background-color: beige;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    justify-self: flex-start;
+    width: window;
+    height: 30px;
+    margin-left: 5px;
+}
+#card-container {
+    display: flex;
+    flex-flow: row wrap;
+    width: window;
+    min-width: 600px;
+    height: 770px;
+    overflow: scroll;
+}
 .title-bar {
     display: flex;
     border: solid rgb(116, 246, 41) 3px;
@@ -10,37 +82,9 @@
     justify-content: center;
     margin-bottom: 10px;
 }
-#body-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    max-height: window;
-}
-h1 {
-    font-family: Rick-and-Morty-font;
-    color: rgb(110, 211, 236);
-    font-size: 60px;
-    text-shadow: rgb(116, 246, 41) 1px 0 10px;
-}
-#favorite-container {
-    display: flex;
-    max-height: 770px;
-    min-width: 180px;
-    border: solid gold 3px;
-    color: black;
-    background-color: beige;
-    margin: 10px;
-    border-radius: 20px;
-    justify-content: center;
-    overflow: scroll;
-    position: relative;
-}
-#card-container {
-    display: flex;
-    flex-flow: row wrap;
-    width: window;
-    height: 770px;
-    overflow: scroll;
+.filterAndCardContainer {
+    width: 900px;
+    display: grid;
 }
 .characterCard {
     display: flex;
@@ -67,22 +111,6 @@ h1 {
     border: solid white 5px;
     border-radius: 15px;
 }
-#filterBarContainer {
-    display: flex;
-    flex-wrap: wrap;
-    border: solid black 3px;
-    color: black;
-    background-color: beige;
-    border-radius: 20px;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    justify-self: flex-start;
-    width: window;
-    height: 30px;
-    margin-left: 5px;
-}
 .favoriteButton {
     margin: 5px;
     width: 30px;
@@ -108,7 +136,7 @@ h1 {
     border: solid gold 3px;
 }
 .hidden {
-    display: none;
+    display: none!important;
 }
 .clear-button {
     position: absolute;
@@ -125,4 +153,55 @@ h1 {
     text-align: center;
     align-items: center;
     cursor: pointer; 
+    
+}
+#empty-favorite-message {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgb(150, 206, 255);
+    font-family: fantasy;
+    box-shadow: 2px 2px 2px; 
+}
+#empty-favorite-message p {
+    justify-self: center;
+    margin: 5px;
+    font-size: 20px;
+}
+.favoriteCard {
+    display: flex;
+    flex-flow: row wrap;
+    width: 175px;
+    height: 200px; 
+    border: solid gold 3px;
+    color: black;
+    background-color: beige;
+    margin: 10px;
+    border-radius: 20px;
+    justify-content: center;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15x;
+    box-shadow: 2px 2px 2px; 
+    font-family: fantasy;
+    position: relative;
+}
+.favoriteCard:hover {
+    border: solid gold 5px;
+}
+.favoriteCard img:first-child {
+    min-width: 175px;
+    height: 150px;
+    border-radius: 15px 15px 0 0;
+}
+.favoriteCard img:last-child {
+    position: absolute;
+    top: 0%;
+    left: 35%;
+    width: 40px;
+}
+.favoriteCard.div {
+    justify-self: center;
 }
