@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MortyPad Unlimited</title>
-    <link href="/Rick+Morty+favicon.ico" rel="icon" type="image/x-icon" />
-    <link rel="stylesheet" href="stylesheet.css">
+    <link href="/img/Rick+Morty+favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="title-bar">
@@ -19,10 +19,16 @@
         <hr style="border: dashed black 3px">
         <div id="filterAndCardContainer">
             <div id="filterBarContainer">
-                <label> Search: </label>
+                <label for="card-search"> Search: </label>
                 <input type="search" id="filter-search" placeholder="name"></input>
             </div>
-        <div id="card-container"></div>
+            <div id="pagination-for-card-container">
+                <div id="previous-page" class="changePage hidden">Previous - Page <span id="prevPageNumber"></span></div>
+                
+                <div id="card-container"></div>
+                
+                <div id="next-page" class="changePage">Next - Page <span id="nextPageNumber"></span></div>
+            </div>
         </div>
     </div>    
     <script src="javascript.js"></script>
