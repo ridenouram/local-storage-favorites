@@ -21,7 +21,8 @@ hr {
 #favorite-container {
     display: flex;
     flex-direction: column;
-    height: 770px;
+    min-height: 770px;
+    height: window;
     min-width: 200px;
     border: solid gold 3px;
     color: black;
@@ -66,6 +67,10 @@ hr {
     height: 30px;
     margin-left: 5px;
 }
+#pagination-for-card-container {
+    display: flex;
+    flex-flow: column nowrap;
+}
 #card-container {
     display: flex;
     flex-flow: row wrap;
@@ -104,7 +109,6 @@ hr {
     overflow: scroll;
     box-shadow: 3px 3px 5px #333;
     position: relative;
-    align-self: center;
 }
 .characterCard img:first-child {
     max-width: 230px;
@@ -206,4 +210,58 @@ hr {
 }
 .favoriteCard.div {
     justify-self: center;
+}
+.noCharacterCards {
+    display: flex;
+    flex-wrap: wrap;
+    border: solid black 3px;
+    color: black;
+    background-color: beige;
+    max-width: 500px;
+    max-height: 440px;
+    margin: 10px;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    overflow: scroll;
+    box-shadow: 3px 3px 5px #333;
+}
+.noCharacterCards p {
+    font-weight: bold;
+    font-family: fantasy;
+    align-self: center;
+    text-align: center;
+}
+.changePage {
+    width: window;
+    height: 30px;
+    border: solid black 3px;
+    color: black;
+    background-color: rgb(111, 236, 232);
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin-left: 5px;
+}
+#previous-page {
+    margin-top: 5px;
+    text-align: center;
+}
+#previous-page:hover {
+    opacity: 70%;
+    border: solid 3px gold;
+    cursor: grab;
+}
+#next-page {
+    margin-bottom: 5px;
+    text-align: center;
+}
+#next-page:hover {
+    opacity: 70%;
+    border: solid 3px gold;
+    cursor: grab;
 }

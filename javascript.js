@@ -1,216 +1,172 @@
-const RickAndMortyAPI = 'https://rickandmortyapi.com/api/character';
-let characterArray = [];
+// ARM BUTTONS + ASSIGN GLOBAL VARIABLES 
+//
+const RickAndMortyAPI = 'https://rickandmortyapi.com/api/character/';
+let favoriteArray = [];
+let currentPageInfo = '';
 const searchInput = document.getElementById('filter-search');
 const favoriteBar = document.getElementById('favorite-container');
-searchInput.addEventListener('keyup', searchMortyPad);
+const cardContainer = document.getElementById('card-container');
+const nextPage = document.getElementById('next-page');
+const prevPage = document.getElementById('previous-page');
+window.addEventListener('Asynchronous data fetching', ()=> {
+    let window = document.querySelector('*');
+    window.style.cursor = 'wait';
+});
+searchInput.addEventListener('search', searchForCharacterCards);
+nextPage.addEventListener('click', fetchNextPage); 
+prevPage.addEventListener('click', fetchPrevPage);
+
+// ON LOAD - GET DATA 
+
+appInit();
+
+async function appInit(){
+    fetchFavoritesInLocalStorage();
+    await getFirstCharacters();  
+}
 
 async function getFirstCharacters() {
-    for(let i = 1; i <= 20; i++) {
-        const APIResponse = await fetch(`${RickAndMortyAPI}/${i}`);
-        const json = await APIResponse.json();
-        let characterCard = {
-            name: json.name,
-            id: `${i}`,
-            image: json.image,
-            status: json.status,
-            species: json.species,
-            location: json.location.name,
-            favorite: false
-        };
-        characterArray.push(characterCard);
-    }
+    const APIfetch = await fetch(`${RickAndMortyAPI}?page=1`);
+    const APIresponse = await APIfetch.json();
+    currentPageInfo = APIresponse.info;
+    // ON LOAD - SHOW DATA 
+    createCharacterCards(APIresponse.results); 
+    let nextPageNumber = document.getElementById('nextPageNumber');
+    nextPageNumber.innerText = currentPageInfo.next.slice(-1); 
 }
 
-async function getCharacters() {
-    for(let i = 21; i <= 826; i++) {
-        const APIResponse = await fetch(`${RickAndMortyAPI}/${i}`);
-        const json = await APIResponse.json();
-        let characterCard = {
-            name: json.name,
-            id: json.id,
-            image: json.image,
-            status: json.status,
-            species: json.species,
-            location: json.location.name,
-            favorite: false
-        };
-        characterArray.push(characterCard);
-    }
-    localStorage.setItem('Character Array', JSON.stringify(characterArray));
-}
+// feed this function an array of character objects -> creates DOM elements: cards, pagination elements, and a
+// display for when no data is received/able to be rendered based on search input
+function createCharacterCards(array) {
+    if(Array.isArray(array)) {
+        for(let i = 0; i < array.length; i++) {
+            let newCard = document.createElement('div');
+            newCard.classList.add('characterCard'); 
+            newCard.addEventListener('click', doThisOnClick);
+            let cardTitle = document.createElement('div');
+            cardTitle.classList.add('characterNames');
+            let cardImg = document.createElement('img');
+            let favoriteIcon = document.createElement('img');
+            let cardText = document.createElement('ul'); 
+            let textSpecies = document.createElement('li');
+            let textStatus = document.createElement('li');
+            let textLocation = document.createElement('li');
+            if(checkFaves(`${array[i].id}`)) {
+                favoriteIcon.src = 'img/favorite-heart.svg';
+                favoriteIcon.classList.add('favorited');
+            } else {favoriteIcon.src = 'img/not-favorite-heart.svg';}
+            favoriteIcon.dataset.index = `${array[i].id}`;
+            favoriteIcon.classList.add('favoriteButton');
+            newCard.id = array[i].id;
+            cardTitle.innerText = `${array[i].name}`;
+            cardImg.src = array[i].image; 
+            textSpecies.innerText = `Species: ${array[i].species}`;
+            textStatus.innerText = `Status: ${array[i].status}`;
+            textLocation.innerText = `Location: ${array[i].location.name}`;
+            cardContainer.appendChild(newCard);
+            newCard.appendChild(cardImg);
+            newCard.appendChild(cardTitle);
+            newCard.appendChild(favoriteIcon);
+            newCard.appendChild(cardText);
+            cardText.appendChild(textSpecies);
+            cardText.appendChild(textStatus);
+            cardText.appendChild(textLocation);
 
-function createCharacterCards() {
-    //for each character object in the character array, create a dom 
-    // element/card render in a flexbox
-    let characterCardContainer = document.getElementById('card-container');
-    for(let i = 0; i < characterArray.length; i++) { 
-        let card = document.createElement('div');
-        card.classList.add('characterCard');
-        let image = document.createElement('img'); 
-        image.src = characterArray[i].image;
-        let name = document.createElement('div');
-        name.classList.add('characterNames');
-        let favoriteIcon = document.createElement('img');
-        if(characterArray[i].favorite) {
-            favoriteIcon.src = 'img/favorite-heart.svg';
-            favoriteIcon.classList.add('favorited');
-        } else {favoriteIcon.src = 'img/not-favorite-heart.svg';}
-        //each hearts index attribute matches card's index in character Array and child # in DOM container
-        favoriteIcon.dataset.index = `${i}`;
-        favoriteIcon.classList.add('favoriteButton');
-        name.innerHTML = characterArray[i].name; 
-        let text = document.createElement('ul');
-        let status = document.createElement('li');
-        status.innerHTML = `Status: ${characterArray[i].status}`;
-        let species = document.createElement('li');
-        species.innerHTML = `Species: ${characterArray[i].species}`;
-        let location = document.createElement('li');
-        location.innerHTML = `Location: ${characterArray[i].location}`;
-        characterCardContainer.appendChild(card);
-        card.appendChild(image);
-        card.appendChild(name);
-        card.appendChild(favoriteIcon);
-        card.appendChild(text);
-        text.appendChild(status);
-        text.appendChild(species); 
-        text.appendChild(location);   
-    }
-}
-
-
-async function mortyAppInit() {
-    console.log('fetching from API for first few characters');
-    await getFirstCharacters();
-    await createCharacterCards();
-    console.log('fetching from API for other 800+ characters');
-    await getCharacters();
-    await createCharacterCards();
-    await listenForFavorite();
-}
-
-// if the character array exists already in local storage, go get it and use that
-// otherwise fetch all the api data, pop localstorage and then use that
-function checkLocalStorage() {
-    let myObj = localStorage.getItem('Character Array');
-    if(myObj !== null) {
-        characterArray = JSON.parse(myObj);
-        console.log(characterArray);
-        createCharacterCards();
-        listenForFavorite();
+        }
+        // else statement that fills the card-container with an error message 
     } else {
-        console.log('else statement trigger');
-        mortyAppInit();}
-}
-
-function updateLocalStorage() {
-    localStorage.setItem('Character Array', JSON.stringify(characterArray));
-}
-
-checkLocalStorage();
-favoriteBarSetup();
-//clearFavorites();
-function searchMortyPad(event) {
-    // here I want to take each key up event and use it to search through all the
-    // name values of each DOM element. Display hidden on all cards that do not match
-    let searchValue = event.target.value.toUpperCase(); 
-    console.log(searchValue);
-    let characterCardNodesList = document.querySelectorAll('div.characterCard');
-    let characterNameList = document.querySelectorAll('div.characterNames');
-    for(let i = 0; i < characterCardNodesList.length; i++) {
-        let characterName = characterNameList[i].innerHTML.toUpperCase();
-        console.log(characterName);
-        if(characterName.indexOf(searchValue) > -1) {
-            characterCardNodesList[i].classList.remove('hidden');
-        }
-        else {
-            characterCardNodesList[i].classList.add('hidden');
-        }
+        console.error('this is not an array');
+        let emptyBoard = document.createElement('div');
+        let emptyBoardText = document.createElement('p');
+        emptyBoard.classList.add('noCharacterCards');
+        emptyBoardText.innerText = 'There are no characters that match your search parameters';
+        cardContainer.appendChild(emptyBoard);
+        emptyBoard.appendChild(emptyBoardText); 
     }
 }
-// favorite functionality building + local storage interaction
-function listenForFavorite() {
-    const favoriteButton = document.querySelectorAll('.favoriteButton');
-    favoriteButton.forEach((favorite) => favorite.addEventListener('click', favoriteOnClick));
+
+//EVENT LISTENER CALLBACK FUNCTIONS
+ 
+async function fetchNextPage() {
+    const APIfetch = await fetch(currentPageInfo.next);
+    const APIresponse = await APIfetch.json();
+    currentPageInfo = APIresponse.info;
+    prevPage.classList.remove('hidden');
+    clearDOMElements();
+    createCharacterCards(APIresponse.results);
+    let nextPageNumber = document.getElementById('nextPageNumber');
+    let prevPageNumber = document.getElementById('prevPageNumber');
+
+    nextPageNumber.innerText = currentPageInfo.next.split('?page=')[1];
+    prevPageNumber.innerText = currentPageInfo.prev.split('?page=')[1];
 }
 
-function favoriteOnClick(event) {
-    addToFavorites(event);
-    changeHeartDisplay(event);
-}
-//populate favorite bar with localstorage faves or empty favorite message
-function favoriteBarSetup() {
-    let emptyFavoriteCard = document.createElement('div');
-    let emptyFavoriteCardText = document.createElement('p');
-    emptyFavoriteCard.classList.add('favoriteCard', 'hidden');
-    emptyFavoriteCard.id = 'empty-favorite-message';
-    emptyFavoriteCardText.innerText = 'Use the heart icon to select your favorite Rick and Morty Characters!';
-    favoriteBar.appendChild(emptyFavoriteCard);
-    emptyFavoriteCard.appendChild(emptyFavoriteCardText);
-    if(localStorage.length === 1) { // It might be better to create a favorites array in localstorage and check to see if that has a length >0 
-        emptyFavoriteCard.classList.remove('hidden');
-    } else {pinExistingFavorites();}
-}
-
-function addToFavorites(event) {
-    let selectedFavoriteCardIndex = event.target.dataset.index; // each heart as an id that matches the id of the card
-    event.target.classList.toggle('favorited');//red heart to black heart toggle
-    if(event.target.classList.contains('favorited')) {
-        console.log('this is one of my faves now');
-        characterArray[selectedFavoriteCardIndex].favorite = true; 
-        let serializedObj = JSON.stringify(characterArray[selectedFavoriteCardIndex]);// stringify the selected cards card object data
-        window.localStorage.setItem(`${characterArray[selectedFavoriteCardIndex].name}`, `${serializedObj}`);
-        console.log(characterArray[selectedFavoriteCardIndex]);
-        updateLocalStorage();
-        pinFavorite(characterArray[selectedFavoriteCardIndex]);
-    } else { 
-        console.log('this is NOT one of my faves now');
-        characterArray[selectedFavoriteCardIndex].favorite = false;
-        let serializedObj = JSON.stringify(characterArray[selectedFavoriteCardIndex]);// stringify the selected cards card object data
-        localStorage.removeItem(`${characterArray[selectedFavoriteCardIndex].name}`, `${serializedObj}`);
-        updateLocalStorage();
-        unpinFavorite(characterArray[selectedFavoriteCardIndex]);
-    }}
-
-function changeHeartDisplay(event) {
-    //debugger;
-    if(event.target.classList.contains('favorited')) {
-        event.target.src = 'img/favorite-heart.svg';
-    } else { event.target.src = 'img/not-favorite-heart.svg';}
-}
-//pin all favorites stored in local storage on load
-function pinExistingFavorites() {
-    for(let i = 0; i < localStorage.length; i++) {
-        let myLocalStorageObj = localStorage.getItem(localStorage.key(i));
-        if(localStorage.key(i) === 'Character Array') continue;
-        let favCharacterObj = JSON.parse(myLocalStorageObj);
-        console.log(favCharacterObj);
-        let favoriteCards = document.createElement('div');
-        favoriteCards.classList.add('favoriteCard');
-        favoriteCards.id = `favorite-card-${favCharacterObj.id}`;
-        let favoriteCardImg = document.createElement('img');
-        favoriteCardImg.src = favCharacterObj.image;
-        let favoriteCardName = document.createElement('div');
-        favoriteCardName.innerText = favCharacterObj.name; 
-        let favoritePin = document.createElement('img');
-        favoritePin.src = 'img/thumb-tack.svg';
-        favoriteBar.appendChild(favoriteCards);
-        favoriteCards.appendChild(favoriteCardImg);
-        favoriteCards.appendChild(favoriteCardName);
-        favoriteCards.appendChild(favoritePin);
+async function fetchPrevPage() {
+    const APIfetch = await fetch(currentPageInfo.prev);
+    const APIresponse = await APIfetch.json();
+    currentPageInfo = APIresponse.info;
+    if(!currentPageInfo.prev) {
+        prevPage.classList.add('hidden');
     }
+    clearDOMElements();
+    createCharacterCards(APIresponse.results);
+    let nextPageNumber = document.getElementById('nextPageNumber');
+    let prevPageNumber = document.getElementById('prevPageNumber');
+    nextPageNumber.innerText = currentPageInfo.next.split('?page=')[1];
+    if(currentPageInfo.prev) {prevPageNumber.innerText = currentPageInfo.prev.split('?page=')[1];}
 }
-function pinFavorite(character) {
-    //remove empty favorite card helper tool 
-    let emptyFavoriteCard = document.getElementById('empty-favorite-message');
-    emptyFavoriteCard.classList.add('hidden');
-    //if favorite -> create DOM element 
+
+// SEARCH CALL BACK FUNCTION 
+//    needs to get data with search input as parameter then call the render character 
+//    card/DOM element function with that data
+
+async function searchForCharacterCards(event) {
+    let searchValue = event.target.value.toUpperCase();
+    if(!searchValue == '') {
+        nextPage.classList.add('hidden');
+    } else {nextPage.classList.remove('hidden');}
+    let APISearch = await fetch(`${RickAndMortyAPI}?name=${searchValue}`); 
+    let APIResults = await APISearch.json(); 
+    clearDOMElements();
+    createCharacterCards(APIResults.results);
+}
+
+// GET FAVROITES 
+
+function fetchFavoritesInLocalStorage() {
+    //check first to see if LS favorite key has any values
+    if(localStorage.favorites) {
+        let favoriteIDs = window.localStorage.getItem('favorites');
+        let myArray = favoriteIDs.split(','); 
+        myArray.forEach(id => favoriteArray.push(id));
+        //returns a string of favorited cards id's
+        getFavoriteData(favoriteIDs);} 
+    else {console.log('local storage has no saved favorites');}
+}
+
+// the endpoint options here are either an object or an array of objects  
+async function getFavoriteData(characterID) {
+    let APIfetch = await fetch(`${RickAndMortyAPI}${characterID}`);
+    let APIresponse = await APIfetch.json(); 
+    if(!APIresponse.length) {
+        pinFavorite(APIresponse); 
+        //console.log('option 1');
+    } else if(APIresponse.length) {
+        //console.log('option 2');
+        APIresponse.forEach(characterObj => pinFavorite(characterObj));
+    } else {console.error('this APIfetch is not returning the correct data type');}
+}
+
+// SHOW FAVORITES -> CREATE DOM ELEMENTS
+
+function pinFavorite(characterObj) {
     let favoriteCard = document.createElement('div');
     favoriteCard.classList.add('favoriteCard');
-    favoriteCard.id = `favorite-card-${character.id}`;
+    favoriteCard.id = `favorite-card-${characterObj.id}`;
     let favoriteCardImg = document.createElement('img');
-    favoriteCardImg.src = character.image;
+    favoriteCardImg.src = characterObj.image;
     let favoriteCardName = document.createElement('div');
-    favoriteCardName.innerText = character.name; 
+    favoriteCardName.innerText = characterObj.name; 
     let favoritePin = document.createElement('img');
     favoritePin.src = 'img/thumb-tack.svg';
     favoriteBar.appendChild(favoriteCard);
@@ -218,7 +174,49 @@ function pinFavorite(character) {
     favoriteCard.appendChild(favoriteCardName);
     favoriteCard.appendChild(favoritePin);
 }
-function unpinFavorite(character) {
-    let unfavoriteCharacter = document.getElementById(`favorite-card-${character.id}`);
-    unfavoriteCharacter.remove();
+//callback function for event listener on card
+// on click, we want the heart to turn red, the favorite cards id be saved to the local storage object and the fav card to be rendered 
+function doThisOnClick(event) {
+    if(!event.target.classList.contains('favoriteButton')) {
+        return;
+    }
+    // on click, toggle the heart display 
+    changeHeartDisplay(event);
+    let characterID = this.id;
+    //debugger;
+    if(!checkFaves(characterID)) {
+        // add the id of the selected fav to the session favorite array
+        favoriteArray.push(characterID); 
+        // save the characer id to LS list 
+        window.localStorage.setItem('favorites', `${favoriteArray}`); 
+        // render favorite card using pinFav function -> needs an object 
+        getFavoriteData(characterID); 
+    } else { 
+        // if the character id is already present: remove the id from the fav array, update local storage, destroy DOM elem 
+        favoriteArray = favoriteArray.filter(x => x !== characterID); 
+        localStorage.setItem('favorites', `${favoriteArray}`);
+        let unFavoriteCard = document.getElementById(`favorite-card-${characterID}`);
+        favoriteBar.removeChild(unFavoriteCard); 
+    }
+    
 }
+
+// HELPER FUNCTIONS
+
+function clearDOMElements() {
+    cardContainer.innerHTML = '';
+}
+function changeHeartDisplay(event) {
+    event.target.classList.toggle('favorited');
+    if(event.target.classList.contains('favorited')) {
+        event.target.src = 'img/favorite-heart.svg';
+        console.log('this is now a favorite');
+    } else { 
+        event.target.src = 'img/not-favorite-heart.svg';
+        console.log('this is now NOT a favorite');
+    } 
+}
+function checkFaves(id) {
+    return Boolean(favoriteArray.find(elem => elem == id));
+}
+
