@@ -18,9 +18,10 @@ load()
 // This function is used to boot the app. 
 // It renders the favorites and the card grid.
 async function load() {
-    initializeLocalStorage();
-    await getData(localStorage.getItem('favorites'), 'faves');
-    await showData('faves');
+    if (localStorage.getItem('favorites')) {
+        await getData(localStorage.getItem('favorites'), 'faves');
+        await showData('faves');
+    }
     await getData(`?page=${currentPage}`, 'grid');
     await showData('grid');
 }
@@ -53,25 +54,27 @@ async function favorite(event) {
     toggleHeartDisplay(event);
 
     const favorites = localStorage.getItem('favorites');
-    const favoriteArray = favorites.split(',');
+    const favoriteArray = favorites ? favorites.split(',') : [];
+
+    // Removing a favorite
     if (favoriteArray.includes(event.currentTarget.id)) {
-        favoriteArray.splice(favoriteArray.indexOf(event.currentTarget.id));
+        favoriteArray.splice(favoriteArray.indexOf(event.currentTarget.id), 1);
     } else {
+        // Add a favorite
         favoriteArray.push(event.currentTarget.id);
     }
-    if (favoriteArray.length === 0) {
-        debugger;
-    }
     localStorage.setItem('favorites', favoriteArray);
-    await getData(localStorage.getItem('favorites'));
+    await getData(localStorage.getItem('favorites'), 'faves');
     await showData('faves');
 }
 
 
 async function getData(queryParam, destination) {
-    if (queryParam === '') {
+    if (queryParam === '' && destination === 'faves') {
+        favoriteCharactersData = [];
         return;
     }
+
     const data = await fetch(`${RickAndMortyAPI}${queryParam}`);
     const parsedResponse = await data.json();
     // check out data.info for metadata
@@ -90,6 +93,7 @@ function showData(destination) {
         favoriteBar.innerHTML = '';
     }
     const collection = destination === 'grid' ? characterGridData : favoriteCharactersData;
+    console.log(collection);
     collection.forEach((character) => {
         if(destination === 'grid') {
             renderCard(character);
@@ -156,12 +160,8 @@ function toggleHeartDisplay(event) {
 
 function checkFaves(id) {
     const favorites = localStorage.getItem('favorites');
-    return Boolean(favorites.split(',').find(elem => elem == id));
-}
-
-function initializeLocalStorage() {
-    const faves = localStorage.getItem('favorites');
-    if (faves === null) {
-        localStorage.setItem('favorites', '');
+    if (!favorites) {
+        return false;
     }
+    return Boolean(favorites.split(',').find(elem => elem == id));
 }
