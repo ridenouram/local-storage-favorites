@@ -31,6 +31,7 @@ async function page(event) {
     console.log(currentPage);
     targetID = event.target.id;
     currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
+    if (currentPage < 1) { currentPage = 1; }
     await getData(`?page=${currentPage}`, 'grid');
     await showData('grid');
 }
