@@ -57,15 +57,17 @@ hr {
     border: solid black 3px;
     color: black;
     background-color: beige;
-    border-radius: 20px;
+    border-radius: 15px;
     justify-content: center;
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
     justify-self: flex-start;
     width: window;
-    height: 30px;
+    height: 50px;
     margin-left: 5px;
+    padding-left: 20px;
+    padding-right: 2px;
 }
 #pagination-for-card-container {
     display: flex;
@@ -248,8 +250,10 @@ hr {
     margin-left: 5px;
 }
 #previous-page {
-    margin-top: 5px;
-    text-align: center;
+    flex-grow: 1;
+    border-radius: 11px;
+    display: flex;
+    padding: 5px 20px 5px 20px;
 }
 #previous-page:hover {
     opacity: 70%;
@@ -257,11 +261,17 @@ hr {
     cursor: grab;
 }
 #next-page {
-    margin-bottom: 5px;
-    text-align: center;
+    flex-grow: 1;
+    border-radius: 11px;
+    display: flex;
+    padding: 5px 20px 5px 20px;
 }
 #next-page:hover {
     opacity: 70%;
     border: solid 3px gold;
     cursor: grab;
+}
+
+#filter-search {
+    flex-grow: 3;
 }
