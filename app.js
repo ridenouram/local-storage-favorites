@@ -13,7 +13,7 @@ searchInput.addEventListener('search', search);
 nextPage.addEventListener('click', page);
 prevPage.addEventListener('click', page);
 
-load()
+load();
 
 // This function is used to boot the app. 
 // It renders the favorites and the card grid.
@@ -63,11 +63,11 @@ async function favorite(event) {
         // Add a favorite
         favoriteArray.push(event.currentTarget.id);
     }
+
     localStorage.setItem('favorites', favoriteArray);
     await getData(localStorage.getItem('favorites'), 'faves');
     await showData('faves');
 }
-
 
 async function getData(queryParam, destination) {
     if (queryParam === '' && destination === 'faves') {
@@ -77,6 +77,7 @@ async function getData(queryParam, destination) {
 
     const data = await fetch(`${RickAndMortyAPI}${queryParam}`);
     const parsedResponse = await data.json();
+
     // check out data.info for metadata
     if (destination === 'grid') {
         characterGridData = parsedResponse.results;
