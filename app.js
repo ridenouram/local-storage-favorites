@@ -18,7 +18,7 @@ load();
 // This function is used to boot the app. 
 // It renders the favorites and the card grid.
 async function load() {
-    if (localStorage.getItem('favorites')) {
+    if(localStorage.getItem('favorites')) {
         await getData(localStorage.getItem('favorites'), 'faves');
         await showData('faves');
     }
@@ -29,10 +29,9 @@ async function load() {
 // This function is used to change the page. 
 // It gets new char content and renders it in the grid.
 async function page(event) {
-    console.log(currentPage);
-    targetID = event.target.id;
+    let targetID = event.target.id;
     currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
-    if (currentPage < 1) { currentPage = 1; }
+    if(currentPage < 1) { currentPage = 1; }
     await getData(`?page=${currentPage}`, 'grid');
     await showData('grid');
 }
@@ -47,7 +46,7 @@ async function search(event) {
 
 // Called on heart click.
 async function favorite(event) {
-    if (!event.target.classList.contains('favoriteButton')) {
+    if(!event.target.classList.contains('favoriteButton')) {
         return;
     }
     
@@ -57,7 +56,7 @@ async function favorite(event) {
     const favoriteArray = favorites ? favorites.split(',') : [];
 
     // Removing a favorite
-    if (favoriteArray.includes(event.currentTarget.id)) {
+    if(favoriteArray.includes(event.currentTarget.id)) {
         favoriteArray.splice(favoriteArray.indexOf(event.currentTarget.id), 1);
     } else {
         // Add a favorite
@@ -70,7 +69,7 @@ async function favorite(event) {
 }
 
 async function getData(queryParam, destination) {
-    if (queryParam === '' && destination === 'faves') {
+    if(queryParam === '' && destination === 'faves') {
         favoriteCharactersData = [];
         return;
     }
@@ -79,7 +78,7 @@ async function getData(queryParam, destination) {
     const parsedResponse = await data.json();
 
     // check out data.info for metadata
-    if (destination === 'grid') {
+    if(destination === 'grid') {
         characterGridData = parsedResponse.results;
     } else {
         favoriteCharactersData = Array.isArray(parsedResponse) ? parsedResponse : [parsedResponse];
@@ -88,13 +87,12 @@ async function getData(queryParam, destination) {
 
 // Looks at characterGridData and renders it in the grid.
 function showData(destination) {
-    if (destination === 'grid') {
+    if(destination === 'grid') {
         cardContainer.innerHTML = '';
     } else {
         favoriteBar.innerHTML = '';
     }
     const collection = destination === 'grid' ? characterGridData : favoriteCharactersData;
-    console.log(collection);
     collection.forEach((character) => {
         if(destination === 'grid') {
             renderCard(character);
@@ -161,7 +159,7 @@ function toggleHeartDisplay(event) {
 
 function checkFaves(id) {
     const favorites = localStorage.getItem('favorites');
-    if (!favorites) {
+    if(!favorites) {
         return false;
     }
     return Boolean(favorites.split(',').find(elem => elem == id));
