@@ -180,6 +180,6 @@ function paginationCheck(pageButton) {
 }
 
 function disablePageButtons() {
-    nextPage.disabled = currentPageData.next ? false : true; 
-    prevPage.disabled = currentPageData.prev ? false : true; 
+    nextPage.disabled = !currentPageData.next;
+    prevPage.disabled = !currentPageData.prev;
 }
