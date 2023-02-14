@@ -172,11 +172,7 @@ function checkFaves(id) {
 }
 
 function paginationCheck(pageButton) {  
-    if(pageButton === 'next-page' && currentPageData.next) {
-        return true; 
-    } else if(pageButton === 'previous-page' && currentPageData.prev) {
-        return true;
-    } else {return false;}
+    return pageButton === 'next-page' ? currentPageData.next : currentPageData.prev;
 }
 
 function disablePageButtons() {
