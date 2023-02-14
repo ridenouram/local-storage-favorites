@@ -32,12 +32,13 @@ async function load() {
 // It gets new char content and renders it in the grid.
 async function page(event) {
     let targetID = event.target.id; 
-    if(paginationCheck(targetID)) {
-        currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
-        await getData(`?page=${currentPage}`, 'grid');
-        await showData('grid');
-    } 
-
+    if (!paginationCheck(targetID)) {
+        return;
+    }
+    
+    currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
+    await getData(`?page=${currentPage}`, 'grid');
+    await showData('grid');
 }
 
 // This function is used to search for characters of a given name.
