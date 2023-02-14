@@ -13,8 +13,7 @@ const prevPage = document.getElementById('previous-page');
 searchInput.addEventListener('search', search);
 nextPage.addEventListener('click', page);
 prevPage.addEventListener('click', page);
-// prev page starts disabled to prevent decrementing page below 1 
-prevPage.disabled = true; 
+
 load();
 
 // This function is used to boot the app. 
@@ -31,12 +30,18 @@ async function load() {
 // This function is used to change the page. 
 // It gets new char content and renders it in the grid.
 async function page(event) {
+
     let targetID = event.target.id; 
     if (!paginationCheck(targetID)) {
         return;
     }
     
     currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
+
+    let targetID = event.target.id;
+    currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
+    if(currentPage < 1) { currentPage = 1; }
+
     await getData(`?page=${currentPage}`, 'grid');
     await showData('grid');
 }
@@ -84,6 +89,7 @@ async function getData(queryParam, destination) {
     // check out parsedResponse.info for metadata
     currentPageData = parsedResponse.info;
     console.log(currentPageData);
+
     if(destination === 'grid') {
         characterGridData = parsedResponse.results;
     } else {
