@@ -276,10 +276,10 @@ button:disabled {
     fill: gray;
 }
 button:disabled:hover {
-    cursor: not-allowed!important;
-    opacity: 20%!important;
-    fill: gray!important;
-    border: solid 3px black!important;
+    cursor: not-allowed !important;
+    opacity: 20% !important;
+    fill: gray !important;
+    border: solid 3px black !important;
 }
 
 #filter-search {
