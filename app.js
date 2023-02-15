@@ -30,19 +30,14 @@ async function load() {
 // This function is used to change the page. 
 // It gets new char content and renders it in the grid.
 async function page(event) {
-
-    let targetID = event.target.id; 
-    if (!paginationCheck(targetID)) {
+    let targetID = event.target.id;  
+    const queryURL = targetID === 'next-page' ? currentPageData.next : currentPageData.prev; 
+    const queryParam = queryURL.split('?')[1]; 
+    if(!paginationCheck(targetID)) {
         return;
     }
-    
     currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
-
-    let targetID = event.target.id;
-    currentPage = targetID === 'next-page' ? currentPage + 1 : currentPage - 1;
-    if(currentPage < 1) { currentPage = 1; }
-
-    await getData(`?page=${currentPage}`, 'grid');
+    await getData(`?${queryParam}`, 'grid');
     await showData('grid');
 }
 
@@ -108,11 +103,11 @@ function showData(destination) {
     collection.forEach((character) => {
         if(destination === 'grid') {
             renderCard(character);
-            disablePageButtons();
         } else {
             renderFavoriteCard(character);
         }
     });
+    disablePageButtons();
 }
 
 // Takes a single character's data and returns a card DOM element.
@@ -130,7 +125,10 @@ function renderCard(characterData) {
     let textStatus = document.createElement('li');
     let textLocation = document.createElement('li');
 
-    favoriteIcon.src = checkFaves(card.id) ? 'img/favorite-heart.svg' : 'img/not-favorite-heart.svg'; 
+    favoriteIcon.src = checkFaves(card.id) ? 'img/favorite-heart.svg' : 'img/not-favorite-heart.svg';
+    if(checkFaves(card.id)) {
+    favoriteIcon.classList.add('favorited');
+    }
     favoriteIcon.classList.add('favoriteButton');
     cardTitle.innerText = `${characterData.name}`;
     cardImg.src = characterData.image;
