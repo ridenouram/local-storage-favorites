@@ -15,14 +15,15 @@
     <div id="body-container">
         <div id="favorite-container">
             <h1><span style="align-items: center; justify-items: center; margin-top: 12px;" >FAVORITES</span></h1>
+            <div id="favorite-card-container"></div>
         </div>
         <hr style="border: dashed black 3px">
         <div id="filterAndCardContainer">
             <div id="filterBarContainer">
                 <label for="card-search"> Search: </label>
                 <input type="search" id="filter-search" placeholder="name"></input>
-                <div id="previous-page" class="changePage">Previous - Page</div>
-                <div id="next-page" class="changePage">Next - Page</div>
+                <button disabled id="previous-page" class="changePage">Previous - Page</button>
+                <button id="next-page" class="changePage">Next - Page</button>
             </div>
             <div id="pagination-for-card-container">
                 

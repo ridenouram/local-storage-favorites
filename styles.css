@@ -271,6 +271,16 @@ hr {
     border: solid 3px gold;
     cursor: grab;
 }
+button:disabled {
+    opacity: 20%;
+    fill: gray;
+}
+button:disabled:hover {
+    cursor: not-allowed !important;
+    opacity: 20% !important;
+    fill: gray !important;
+    border: solid 3px black !important;
+}
 
 #filter-search {
     flex-grow: 3;
