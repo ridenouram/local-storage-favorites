@@ -17,5 +17,5 @@ Additonally, a button should render with each character so that the user can add
 A list of the user's favorites should render in a section at the top/side of the page, above the general list of characters. When a character is favorited, it should be added to this section. The user shoud be able to remove the character from their favorites by reselecting the favorite icon on the card. 
 
 ## Deployment + Local Replication 
-This app was developed locally using the VS Code Live Server extension. For a deployed version of the site please visit the following netlify link: local-storage-favorites.netlify.app
+This app was developed locally using the VS Code Live Server extension. For a deployed version of the site please visit the following netlify link: [local storage favorites](local-storage-favorites.netlify.app). 
 
